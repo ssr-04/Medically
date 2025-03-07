@@ -13,20 +13,22 @@ import toast from 'react-hot-toast';
 type UpcomingMeds = Awaited<ReturnType<typeof getAllUpcomingMeds>>
 type MedicationProps = NonNullable<UpcomingMeds>[number];
 
-const formatTime = (date:Date) => {
-    return new Date(date).toLocaleTimeString("en-US", {
+const formatTime = (date: Date) => {
+    return new Date(date).toLocaleTimeString("en-IN", {
+        timeZone: "Asia/Kolkata",
         hour: "numeric",
         minute: "2-digit",
         hour12: true,
-    })
+    });
 }
 
-const formatDate = (date:Date) => {
-    return new Date(date).toLocaleDateString("en-GB", {
+const formatDate = (date: Date) => {
+    return new Date(date).toLocaleDateString("en-IN", {
+        timeZone: "Asia/Kolkata",
         day: "numeric",
         month: "short",
         year: "numeric",
-    })
+    });
 }
 
 const UpcomingMedicationCard = ({medication}:{medication:MedicationProps}) => {

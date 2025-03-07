@@ -4,20 +4,22 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
 import { DoseLog } from '@prisma/client'
 
-const formatTime = (date:Date) => {
-    return new Date(date).toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-    })
+const formatTime = (date: Date) => {
+  return new Date(date).toLocaleTimeString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+  });
 }
 
-const formatDate = (date:Date) => {
-    return new Date(date).toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-    })
+const formatDate = (date: Date) => {
+  return new Date(date).toLocaleDateString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+  });
 }
 
 const calculateDiff = (log: DoseLog) => {
