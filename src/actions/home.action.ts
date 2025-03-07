@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 
 export const getAllUpcomingMeds = async () => {
     const userId = await getDbUserId();
+    if(!userId) return;
     try {
         const medications = await prisma.medication.findMany({
             where: {

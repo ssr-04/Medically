@@ -1,11 +1,24 @@
 import { getAllUpcomingMeds } from "@/actions/home.action";
+import CustomSignInButton from "@/components/CustomSignInButton";
+import { Button } from "@/components/ui/button";
 import UpcomingMedicationCard from "@/components/UpcomingMedicationCard";
+import { SignInButton } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
 
 const Home = async () => {
   const UpcomingMeds = await getAllUpcomingMeds();
   const user = await currentUser();
+
+  if(!user){
+    return (
+      <div className="h-[70vh] flex flex-col items-center justify-center gap-3">
+        <h3 className="font-bold text-xl">Welcome to Medicaly!</h3>
+        <p className="text-muted-foreground">Sign in to get started.</p>
+        <CustomSignInButton />
+      </div>
+    )
+  }
   
   // console.log(JSON.stringify(UpcomingMeds, null, 2)); 
   if(UpcomingMeds?.length===0){
