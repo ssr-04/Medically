@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int         @id @default(autoincrement())
+  clerkId      String      @unique
+  email        String      @unique
+  name         String?
+  // Additional preferences (e.g., notification settings) can be added here
+  conditions   Condition[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model Condition {
+  id           Int           @id @default(autoincrement())
+  name         String
+  description  String?
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  medications  Medication[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Medication {
+  id                      Int          @id @default(autoincrement())
+  name                    String
+  height                  Int          // For grid display in the UI
+  width                   Int
+  currentCount            Int          // Current count in the strip
+  extraAvailable          Int          // Extra strips available for refill alerts
+  prescriptionDuration    Int          // Interval between doses (e.g., in hours)
+  prescriptionDays        Int?         // Number of days to take; null could mean ongoing/infinite
+  startDate               DateTime?    // When the regimen starts
+  endDate                 DateTime?    // When the regimen ends (if applicable)
+  instructions            String?      // Dosage instructions or notes
+  status                  MedicationStatus @default(PAUSED)
+  
+  // Relation to the condition this medication is associated with
+  condition               Condition    @relation(fields: [conditionId], references: [id], onDelete: Cascade)
+  conditionId             Int
+  
+  // Logs for doses taken/missed
+  doseLogs                DoseLog[]
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+}
+
+model DoseLog {
+  id            Int          @id @default(autoincrement())
+  // Link each log to its medication
+  medication    Medication   @relation(fields: [medicationId], references: [id], onDelete: Cascade)
+  medicationId  Int
+  scheduledTime DateTime     // When the dose was supposed to be taken
+  takenTime     DateTime?    // When the dose was actually taken
+  status        DoseStatus   // Status of the dose (e.g., TAKEN, MISSED, SKIPPED)
+  createdAt     DateTime     @default(now())
+}
+
+enum MedicationStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+}
+
+enum DoseStatus {
+  PENDING
+  TAKEN
+  MISSED
+  SKIPPED
+}
